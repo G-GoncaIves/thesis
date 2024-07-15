@@ -1,6 +1,6 @@
 # Custom class imports:
 import os
-from utils.generation import simulate_dataset
+from ...utils.generation import simulate_dataset
 
 simulate_dataset(
     nbr=10,
