@@ -1,9 +1,12 @@
 # Custom class imports:
 import os
-from ...utils.generation import simulate_dataset
+import sys
+
+sys.path.insert(1, '/home/goncalo/Projects/thesis/utils/generation')
+from generation import simulate_dataset
 
 simulate_dataset(
-    nbr=10,
+    nbr=50000,
     store_dir=os.path.join(os.getcwd(), "Data").replace("\\","/"),
     overwrite=False,
     desired_multiplicity=2,

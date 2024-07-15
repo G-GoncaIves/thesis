@@ -1,7 +1,7 @@
 
-from .simulate import SLEvent
-from .sampler import generate_sample_config, NormalDist, AsymmetricGaussian, MagnitudeDist, UniformDist, EllipticityDist, z_and_etheta_from_file
-from .video import GenerateVideo
+from simulate import SLEvent
+from sampler import generate_sample_config, NormalDist, AsymmetricGaussian, MagnitudeDist, UniformDist, EllipticityDist, z_and_etheta_from_file
+from video import GenerateVideo
 import pandas as pd
 
 # Other imports:
@@ -11,7 +11,7 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util.data_util import cps2magnitude
 import numpy as np
 import matplotlib.pyplot as plt
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import os
 from datetime import date
 from lenstronomy.SimulationAPI.observation_api import SingleBand
@@ -244,13 +244,15 @@ def simulate_dataset(
         total = threshold, 
         position = 0, 
         desc = "Number of Tries", 
-        colour = "blue"
+        colour = "blue",
+	leave = True
     )
     finds_pbar = tqdm(
         total = nbr, 
         position = 1, 
         desc = "Systems Found ", 
-        colour = "magenta"
+        colour = "magenta",
+	leave = True
     )
     while n < nbr and k < threshold:
         sample_config, sampled_vars = generate_sample_config(
@@ -327,7 +329,6 @@ def simulate_dataset(
                                 im0_peak_flux, im1_peak_flux = no_td_details["point_amp"]
                                 im0_peak_mag = cps2magnitude(im0_peak_flux, magnitude_zero_point=26.30)
                                 im1_peak_mag = cps2magnitude(im1_peak_flux, magnitude_zero_point=26.30)
-                                print(im0_peak_mag, im1_peak_mag)
                                 store_sample(
                                     dataframe=simulation_df, 
                                     sample_dict=sampled_vars.copy(), 

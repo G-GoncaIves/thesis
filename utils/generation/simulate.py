@@ -1,5 +1,5 @@
 # Import custom classes:
-from .lightcurve import LightCurve
+from lightcurve import LightCurve
 
 # Import from standard libraties:
 from lenstronomy.LensModel.lens_model import LensModel
