@@ -266,7 +266,6 @@ def run_multiple_trains(
         if return_test_idxs:
             test_idxs_path = os.path.join(output_dir, "test_idxs.json").replace("\\", "/")
             idxs = list(get_loader_idxs(test_dataloader))
-            print(type(idxs), len(idxs))
             with open(test_idxs_path, 'w') as file:
                 json.dump(idxs, file, cls=NpEncoder)
         
