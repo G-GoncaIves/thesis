@@ -89,21 +89,18 @@ def train(
     epoch_pbar = tqdm(
         total = n_epochs,
         position = 1, 
-        desc = "Epoch            ", 
-        colour = "royalblue"
+        desc = "Epoch            "
     )
     batch_train_pbar = tqdm(
         total = len(train_loader),
         position = 2, 
-        desc = "Train Batch      ", 
-        colour = "salmon",
+        desc = "Train Batch      ",
         leave = False
     )
     batch_valid_pbar = tqdm(
         total = len(valid_loader),
         position = 3, 
-        desc = "Validation Batch ", 
-        colour = "orchid",
+        desc = "Validation Batch ",
         leave = False
     )
     out_dir = setup_dir(output_dir, train_desc=train_desc)
@@ -241,8 +238,7 @@ def run_multiple_trains(
     config_pbar = tqdm(
         total = len(configs_list),
         position = 0, 
-        desc = "Config            ", 
-        colour = "cyan"
+        desc = "Config            "
     )
     for n_config, config in enumerate(configs_list):
         current_trains_desc = f"_config_{n_config}"
