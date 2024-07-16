@@ -9,7 +9,7 @@ import pickle
 import json
 
 #Custom imports:
-from .data import Videos
+from data import Videos
 
 
 
