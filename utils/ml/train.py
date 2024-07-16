@@ -223,7 +223,7 @@ def get_loader_idxs(dataloader):
         idx_set = idx_set | i
     return idx_set
 
-def run_multiple_trains_pos(
+def run_multiple_trains(
     configs_list : list,
     train_dir : str,
     default_config : dict,
@@ -255,7 +255,7 @@ def run_multiple_trains_pos(
             videos_dir = current_train_config["data_path"],
             generation_df_path = current_train_config["generation_df_path"],
             rescale = current_train_config["rescale"],
-            labels=["im_dec","im_ra"]
+            labels = current_train_config["param"]
         )
         
         g_cpu = torch.Generator()
