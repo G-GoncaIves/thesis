@@ -247,6 +247,8 @@ def run_multiple_trains(
     for n_config, config in enumerate(configs_list):
         current_trains_desc = f"_config_{n_config}"
         current_train_config = default_config
+        for key in config.keys():
+            current_train_config[key] = config[key]
     
         data = Videos(
             videos_dir = current_train_config["data_path"],
