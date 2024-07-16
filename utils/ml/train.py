@@ -282,14 +282,14 @@ def run_multiple_trains(
             device=device
         )
         
-        test_pbar = tqdm(
-            total = len(test_dataloader),
-            position = 5, 
-            desc = "Testing     "
-        )  
-        
         with torch.no_grad():
             for state, state_loss in zip(["best", f"{last_epoch}"],[best_loss, last_loss]):
+                test_pbar = tqdm(
+                    total = len(test_dataloader),
+                    position = 5, 
+                    desc = "Testing     ",
+                    leave = False
+                )
                 model_state_path = os.path.join(out_dir, f"model_state_{state}.pt").replace("\\", "/")
                 trained_model = current_train_config["model"]
                 trained_model.load_state_dict(torch.load(model_state_path))
