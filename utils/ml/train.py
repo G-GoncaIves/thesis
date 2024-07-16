@@ -89,18 +89,19 @@ def train(
     epoch_pbar = tqdm(
         total = n_epochs,
         position = 1, 
-        desc = "Epoch            "
+        desc = "Epoch       ",
+        leave = False
     )
     batch_train_pbar = tqdm(
         total = len(train_loader),
         position = 2, 
-        desc = "Train Batch      ",
+        desc = "Train       ",
         leave = False
     )
     batch_valid_pbar = tqdm(
         total = len(valid_loader),
         position = 3, 
-        desc = "Validation Batch ",
+        desc = "Validation  ",
         leave = False
     )
     out_dir = setup_dir(output_dir, train_desc=train_desc)
@@ -238,7 +239,7 @@ def run_multiple_trains(
     config_pbar = tqdm(
         total = len(configs_list),
         position = 0, 
-        desc = "Config            "
+        desc = "Config      "
     )
     for n_config, config in enumerate(configs_list):
         current_trains_desc = f"_config_{n_config}"
@@ -285,8 +286,7 @@ def run_multiple_trains(
         test_pbar = tqdm(
             total = len(test_dataloader),
             position = 5, 
-            desc = "Testing            ", 
-            colour = "mediumturquoise"
+            desc = "Testing     "
         )  
         
         with torch.no_grad():
