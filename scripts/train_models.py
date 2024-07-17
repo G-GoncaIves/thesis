@@ -16,14 +16,29 @@ default_config = {
     "loss_fn" : torch.nn.MSELoss(),
     "model" : None,
     "param" : None,
-    "data_path" : "c:/Users/sneaky/Code/lensing/Data/train/m_2/Videos",
-    "generation_df_path" : "c:/Users/sneaky/Code/lensing//Data/train/m_2/train_simulated.pickle"
+    "data_path" : "/home/goncalo/Projects/thesis/scripts/Data/test/m_2/Videos",
+    "generation_df_path" : "/home/goncalo/Projects/thesis/scripts/Data/test/m_2/test_simulated.pickle"
 }
 
 configs_list = [
     {
         "data_size" : 15000,
-        "rescale" : 1
+        "rescale" : 100,
+	"param" : ["e1","e2"],
+	"model" : Net2D(out_dim=2)
+    },
+    {
+	"data_size" : 15000,
+	"rescale" : 1,
+	"param" : ["e1","e2"],
+	"model" : Net2D(out_dim=2),
+	"epochs" : 2500
+    },
+    {
+        "data_size" : 20000,
+        "rescale" : 1,
+        "param" : ["e1","e2"],
+        "model" : Net2D(out_dim=2)
     }
 ]
 
