@@ -13,8 +13,10 @@ class Videos(Dataset):
         videos_dir,
         generation_df_path,
         labels,
-        rescale
+        rescale,
+        no_td = True
     ):
+        self.no_td = no_td
         total_df = pd.read_pickle(generation_df_path)
         _labels = [str(label) for label in labels]
         self.df = total_df[["id",*_labels]]
@@ -22,14 +24,15 @@ class Videos(Dataset):
         self.standardize_df(labels=_labels)
         self.data_dir = videos_dir
         ids = os.listdir(videos_dir)
-        self.ids = list(filter(self.is_no_td, ids))
+        self.ids = list(filter(self.is_desired_type, ids))
         self.rescale = rescale
     
-    def is_no_td(self, sample_name):
+    def is_desired_type(self, sample_name):
         if "no_td" in sample_name:
-            return True
+            _no_td = True 
         else:
-            return False
+            _no_td = False
+        return _no_td == self.no_td
         
     def standardize_df(self, labels):
         for label in labels:
@@ -53,7 +56,7 @@ class Videos(Dataset):
             target_tensor[i] = float(row[self.labels[i]].to_numpy()[0])
         return target_tensor
     
-    def get_frame_tensor(self, id):
+    def get_sample_tensor(self, id):
         video_path = os.path.join(self.data_dir, id).replace("\\","/")
         video_array = np.float32(np.load(video_path))
         frame_array = np.asarray([video_array])
@@ -64,6 +67,10 @@ class Videos(Dataset):
     
     def __getitem__(self, index):
         sample_id = self.ids[index]
-        frame_tensor = self.get_frame_tensor(id=sample_id)
-        target_tensor = self.get_target_tensor(id = sample_id.replace("_no_td.npy",""))
+        frame_tensor = self.get_sample_tensor(id=sample_id)
+        if self.no_td:
+            id_str_extras = "no_td.npy"
+        else:
+            id_str_extras = ".npy"
+        target_tensor = self.get_target_tensor(id = sample_id.replace(id_str_extras,""))
         return frame_tensor, target_tensor*self.rescale, index
