@@ -251,7 +251,8 @@ def run_multiple_trains(
             videos_dir = current_train_config["data_path"],
             generation_df_path = current_train_config["generation_df_path"],
             rescale = current_train_config["rescale"],
-            labels = current_train_config["param"]
+            labels = current_train_config["param"],
+            no_td = current_train_config["no_td"]
         )
         
         g_cpu = torch.Generator()
