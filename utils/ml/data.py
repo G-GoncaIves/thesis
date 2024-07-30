@@ -69,7 +69,7 @@ class Videos(Dataset):
         sample_id = self.ids[index]
         frame_tensor = self.get_sample_tensor(id=sample_id)
         if self.no_td:
-            id_str_extras = "no_td.npy"
+            id_str_extras = "_no_td.npy"
         else:
             id_str_extras = ".npy"
         target_tensor = self.get_target_tensor(id = sample_id.replace(id_str_extras,""))
