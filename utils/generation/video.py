@@ -118,7 +118,7 @@ class GenerateFrame(SetupGeneration):
         current_image_parameters["kwargs_ps"] = [current_source_details]
         image = self.imagemodel.image(**current_image_parameters)
         poisson = image_util.add_poisson(image, exp_time=self.config_noise["exp_time"])
-        background = poisson = image_util.add_background(image, sigma_bkd=self.config_noise["background_rms"])
+        background = image_util.add_background(image, sigma_bkd=self.config_noise["background_rms"])
         return image + poisson + background
     
     def simulate_no_td_frame(self, band, peak_details=None):
