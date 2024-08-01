@@ -38,8 +38,9 @@ class Videos(Dataset):
         for label in labels:
             if label in self._tuples_label_list:
                 im0_label, im1_label = self.split_columns(current_column_name=label)
-                self.labels.append(im0_label)
                 self.labels.append(im1_label)
+                if label != "im_td":
+                    self.labels.append(im0_label)
             else:
                 self.labels.append(label)
                 
