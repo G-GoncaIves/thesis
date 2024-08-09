@@ -65,7 +65,7 @@ c_distribution_config = {
 c_dist = AsymmetricGaussian(**c_distribution_config)
 
 magnitude_dist_config = {
-    "alpha" : 3.1,
+    "alpha" : 0.14,
     "beta" : 3.1,
     "x1" : x1_dist.sample,
     "c" : c_dist.sample,
