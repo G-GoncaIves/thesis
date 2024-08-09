@@ -234,7 +234,7 @@ def generate_sample_config(
     
     noise_dict = {
         "exp_time" : 55,
-        "background_rms" : SingleBand(**singleband_dict).background_noise * 0.001
+        "background_rms" : SingleBand(**singleband_dict).background_noise
     }
     #print(noise_dict["background_rms"])
 
