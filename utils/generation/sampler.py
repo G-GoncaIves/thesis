@@ -143,7 +143,7 @@ def generate_sample_config(
     }
 
     cosmology_params = {
-        "H0" : 67.66,
+        "H0" : 67.4,
         "Om0" : 0.309,
         "Ob0" : 0.05
     }
