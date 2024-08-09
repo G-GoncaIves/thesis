@@ -131,9 +131,6 @@ def generate_sample_config(
         "magnitude" : magnitude
     }
     
-    source_x *= theta_e
-    source_y *= theta_e 
-    
     # ------------------------------------------------------------------
     # Information needed to setup an instance of LensModel():
     # ------------------------------------------------------------------
