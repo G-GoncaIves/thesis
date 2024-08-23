@@ -82,6 +82,8 @@ def train(
     loss_fn,
     lr,
     output_dir,
+    patience,
+    min_delta,
     save_every=5,
     train_desc="",
     device=None
@@ -112,8 +114,8 @@ def train(
         )
     history = {}
     early_stopper = EarlyStopper(
-        patience=300, 
-        min_delta=0
+        patience=patience, 
+        min_delta=min_delta
         )
     for epoch in range(n_epochs):
         model.train()
@@ -280,6 +282,8 @@ def run_multiple_trains(
             save_every = 500,
             output_dir = output_dir,
             train_desc = current_trains_desc,
+            patience = current_train_config["patience"],
+            min_delta = current_train_config["min_delta"]
             device=device
         )
         
