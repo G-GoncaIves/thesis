@@ -283,7 +283,7 @@ def run_multiple_trains(
             output_dir = output_dir,
             train_desc = current_trains_desc,
             patience = current_train_config["patience"],
-            min_delta = current_train_config["min_delta"]
+            min_delta = current_train_config["min_delta"],
             device=device
         )
         
