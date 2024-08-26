@@ -81,7 +81,7 @@ ellipticity = EllipticityDist(q_dist=q, theta_dist=theta)
 source_x = UniformDist(lower_bound=-1, upper_bound=1)
 source_y = UniformDist(lower_bound=-1, upper_bound=1)
 
-def store_sample(dataframe, sample_dict, id, multiplicity, image_details, video_interval, observed_images_ratio, peak_flux, peak_mag):
+def store_sample(dataframe, sample_dict, id, multiplicity, image_details, video_interval, observed_images_ratio, peak_flux=None, peak_mag=None):
     sample_dict["id"] = id
     sample_dict["multiplicity"] = multiplicity
     sample_dict["im_peak_mags"] = peak_mag
@@ -127,25 +127,33 @@ def image_was_observed(start, stop, cadence, interval):
 def analyse_image_timing(images_info_dict, cadence, band):
     
     timings = []
-    observed_images, max_time, min_time = 0, 0, 0
+    observed_images, max_time, min_time, invalid_image_nbr = 0, 0, 0, 0
     for n, (_, image_dict) in enumerate(images_info_dict.items()):
-        start, stop = image_dict[band]["time"][0], image_dict[band]["time"][-1]
-        timings.append((start, stop))
-        if start < min_time:
-            min_time =start 
-        if stop > max_time:
-            max_time = stop
-    for image_timing in timings:
-        if image_was_observed(
-            start = min_time,
-            stop = max_time,
-            cadence = cadence,
-            interval = image_timing
-        ):
-            observed_images += 1
+        try:
+            start, stop = image_dict[band]["time"][0], image_dict[band]["time"][-1]
+            timings.append((start, stop))
+            
+            if start < min_time:
+                min_time = start 
+            if stop > max_time:
+                max_time = stop
+        
+        except IndexError:
+            invalid_image_nbr += 1
+            
+    if len(timings) > 0:
+        for image_timing in timings:
+            if image_was_observed(
+                start = min_time,
+                stop = max_time,
+                cadence = cadence,
+                interval = image_timing
+            ):
+                observed_images += 1
+                
+    observed_images += -1*invalid_image_nbr
     ratio = observed_images / (n+1)
-    return min_time, max_time, ratio
-
+    return min_time, max_time, max(0, ratio)
 def vars_in_desired_range(sampled_vars, image_details, numPix=40, deltaPix=0.05):
     c1 = sampled_vars["z_source"] > sampled_vars["z_lens"]
     c2 = all([td < 200 for td in image_details["time_delay"]])
@@ -168,10 +176,10 @@ def simulate_dataset(
     store_dir, 
     name=None, 
     overwrite=False, 
-    desired_multiplicity=2, 
+    desired_multiplicity=4, 
     threshold=1000, 
     cadence=5, 
-    save_every=500, 
+    save_every=50, 
     visibility_ratio=0,
     min_visibility_len=0,
     desc=""
