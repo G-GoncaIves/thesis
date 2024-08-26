@@ -334,9 +334,11 @@ def simulate_dataset(
                                     file=no_td_frame_path, 
                                     arr=no_td_frame
                                 )
-                                im0_peak_flux, im1_peak_flux = no_td_details["point_amp"]
+                                im0_peak_flux, im1_peak_flux, im2_peak_flux, im3_peak_flux = no_td_details["point_amp"]
                                 im0_peak_mag = cps2magnitude(im0_peak_flux, magnitude_zero_point=26.30)
                                 im1_peak_mag = cps2magnitude(im1_peak_flux, magnitude_zero_point=26.30)
+                                im2_peak_mag = cps2magnitude(im2_peak_flux, magnitude_zero_point=26.30)
+                                im3_peak_mag = cps2magnitude(im3_peak_flux, magnitude_zero_point=26.30)
                                 store_sample(
                                     dataframe=simulation_df, 
                                     sample_dict=sampled_vars.copy(), 
