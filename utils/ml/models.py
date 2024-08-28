@@ -314,7 +314,7 @@ class Net3D_v2(torch.nn.Module):
     def forward(self, x):
         return self.net(x)
 
-class Net3D_v3(nn.Module):
+class Net3D_v3(torch.nn.Module):
     
     def __init__(self, out_dim):
         super(Net3D_v3, self).__init__()
