@@ -357,7 +357,7 @@ class Net3D_v3(torch.nn.Module):
             ),
             torch.nn.Flatten(),
             torch.nn.Linear(
-                in_features=64 * 1 * 2 * 2,
+                in_features=64 * 1 * 2 * 2 *2,
                 out_features=128
             ),
             torch.nn.ReLU(),
