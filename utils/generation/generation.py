@@ -299,7 +299,7 @@ def simulate_dataset(
                                 config_imagemodel = sample_config["image_model_dict"],
                                 details_images = system.images_info_dict
                             )
-                            start_times = [image_dict["F087"]["time"][0] for image_dict in system.images_info_dict]
+                            start_times = [system.images_info_dict[key]["F087"]["time"][0] for key in system.images_info_dict]
 			    start_time = np.min(start_times)
                             start_offset = -5 
                             video = gen_video.simulate_video(
