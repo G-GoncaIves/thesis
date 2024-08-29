@@ -299,11 +299,12 @@ def simulate_dataset(
                                 config_imagemodel = sample_config["image_model_dict"],
                                 details_images = system.images_info_dict
                             )
-                            system_time_delays = system.image_details["time_delay"]
-                            max_time_delay = 190#np.max(system_time_delays)
+                            start_times = [image_dict["F087"]["time"][0] for image_dict in system.images_info_dict]
+			    start_time = np.min(start_times)
+                            start_offset = -5 
                             video = gen_video.simulate_video(
                                 band="F087", 
-                                observation_window=[-10,max_time_delay], 
+                                observation_window=[start_time + start_offset, start_time + start_offset + 200], 
                                 observation_cadence=cadence
                             )
                             no_td_details = gen_video.get_no_td_image_details(band="F087")
