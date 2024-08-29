@@ -291,17 +291,17 @@ class Net3D_v2(torch.nn.Module):
             ),
             torch.nn.Flatten(),
             torch.nn.Linear(
-                in_features = 128*1*2*2,
-                out_features = 256
-            ),
-            torch.nn.Tanh(),
-            torch.nn.Linear(
-                in_features = 256,
-                out_features = 128
-            ),
-            torch.nn.Tanh(),
-            torch.nn.Linear(
                 in_features = 128,
+                out_features = 64
+            ),
+            torch.nn.Tanh(),
+            torch.nn.Linear(
+                in_features = 64,
+                out_features = 32
+            ),
+            torch.nn.Tanh(),
+            torch.nn.Linear(
+                in_features = 32,
                 out_features = out_dim
             )      
         )
