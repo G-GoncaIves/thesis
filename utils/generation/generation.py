@@ -334,11 +334,8 @@ def simulate_dataset(
                                     file=no_td_frame_path, 
                                     arr=no_td_frame
                                 )
-                                im0_peak_flux, im1_peak_flux, im2_peak_flux, im3_peak_flux = no_td_details["point_amp"]
-                                im0_peak_mag = cps2magnitude(im0_peak_flux, magnitude_zero_point=26.30)
-                                im1_peak_mag = cps2magnitude(im1_peak_flux, magnitude_zero_point=26.30)
-                                im2_peak_mag = cps2magnitude(im2_peak_flux, magnitude_zero_point=26.30)
-                                im3_peak_mag = cps2magnitude(im3_peak_flux, magnitude_zero_point=26.30)
+				peak_flux_array = no_td_details["point_amp"]
+				peak_mag_array = [cps2magnitude(flux, magnitude_zero_point=26.30) for flux in peak_flux_array]
                                 store_sample(
                                     dataframe=simulation_df, 
                                     sample_dict=sampled_vars.copy(), 
@@ -347,8 +344,8 @@ def simulate_dataset(
                                     image_details = system.image_details, 
                                     video_interval = [video_start, video_stop], 
                                     observed_images_ratio = images_seen_ratio,
-                                    peak_flux = [im0_peak_flux, im1_peak_flux],
-                                    peak_mag = [im0_peak_mag, im1_peak_mag]
+                                    peak_flux = peak_flux_array,
+                                    peak_mag = peak_mag_array
                                 )
                                 n += 1
                                 finds_pbar.update(1)
