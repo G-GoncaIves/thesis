@@ -70,8 +70,10 @@ class LightCurve():
 
 		assert band_name in self.implemented_bands_dict.keys()
 		band_info_dict = self.implemented_bands_dict[band_name]
-
-		_time_range = np.linspace(*time_range, num=time_num)
+		min_time = self.light_curve_model.mintime()
+		max_time = self.light_curve_model.maxtime()
+		corrected_time_range = [time_range[0] + min_time, time_range[1] + max_time]
+		_time_range = np.linspace(*corrected_time_range, num=time_num)
 
 		try:
 			return self.light_curve_model.bandflux(band_name, _time_range, zp=band_info_dict["zp"], zpsys="ab"), _time_range

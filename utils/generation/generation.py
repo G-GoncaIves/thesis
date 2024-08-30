@@ -299,11 +299,12 @@ def simulate_dataset(
                                 config_imagemodel = sample_config["image_model_dict"],
                                 details_images = system.images_info_dict
                             )
-                            system_time_delays = system.image_details["time_delay"]
-                            max_time_delay = 190#np.max(system_time_delays)
+                            start_times = [system.images_info_dict[key]["F087"]["time"][0] for key in system.images_info_dict]
+			    start_time = np.min(start_times)
+                            start_offset = -5 
                             video = gen_video.simulate_video(
                                 band="F087", 
-                                observation_window=[-10,max_time_delay], 
+                                observation_window=[start_time + start_offset, start_time + start_offset + 200], 
                                 observation_cadence=cadence
                             )
                             no_td_details = gen_video.get_no_td_image_details(band="F087")
@@ -334,11 +335,8 @@ def simulate_dataset(
                                     file=no_td_frame_path, 
                                     arr=no_td_frame
                                 )
-                                im0_peak_flux, im1_peak_flux, im2_peak_flux, im3_peak_flux = no_td_details["point_amp"]
-                                im0_peak_mag = cps2magnitude(im0_peak_flux, magnitude_zero_point=26.30)
-                                im1_peak_mag = cps2magnitude(im1_peak_flux, magnitude_zero_point=26.30)
-                                im2_peak_mag = cps2magnitude(im2_peak_flux, magnitude_zero_point=26.30)
-                                im3_peak_mag = cps2magnitude(im3_peak_flux, magnitude_zero_point=26.30)
+				peak_flux_array = no_td_details["point_amp"]
+				peak_mag_array = [cps2magnitude(flux, magnitude_zero_point=26.30) for flux in peak_flux_array]
                                 store_sample(
                                     dataframe=simulation_df, 
                                     sample_dict=sampled_vars.copy(), 
@@ -347,8 +345,8 @@ def simulate_dataset(
                                     image_details = system.image_details, 
                                     video_interval = [video_start, video_stop], 
                                     observed_images_ratio = images_seen_ratio,
-                                    peak_flux = [im0_peak_flux, im1_peak_flux],
-                                    peak_mag = [im0_peak_mag, im1_peak_mag]
+                                    peak_flux = peak_flux_array,
+                                    peak_mag = peak_mag_array
                                 )
                                 n += 1
                                 finds_pbar.update(1)

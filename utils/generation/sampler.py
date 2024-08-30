@@ -304,7 +304,7 @@ def generate_sample_config(
 
     simulation_config = {
         "bands" : {"F087" : {"zp" : 26.30, "line_color": "turquoise"}},
-        "time_range" : [-10,80],
+        "time_range" : [-5,0],
         "time_precision" : 0.01,
         "source_plane" : "emission_plane",
         "time_delays" : None,
