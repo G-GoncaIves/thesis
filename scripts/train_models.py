@@ -3,8 +3,8 @@ import os
 import sys
 import torch
 
-sys.path.insert(1, '/home/goncalo/Projects/thesis/utils/ml')
-from models import Net2D
+sys.path.insert(1, 'c:/Users/sneaky/Code/thesis/utils/ml')
+from models import Net3D_wDO
 from train import run_multiple_trains
 
 default_config = {
@@ -16,29 +16,16 @@ default_config = {
     "loss_fn" : torch.nn.MSELoss(),
     "model" : None,
     "param" : None,
-    "data_path" : "/home/goncalo/Projects/thesis/scripts/Data/test/m_2/Videos",
-    "generation_df_path" : "/home/goncalo/Projects/thesis/scripts/Data/test/m_2/test_simulated.pickle"
+    "data_path" : "/home/sneaky/Code/lensing/Data/noisy_offset/m_2/Videos",
+    "generation_df_path" : "/home/sneaky/Code/lensing/Data/noisy_offset/Data/test/m_2/test_simulated.pickle"
 }
 
 configs_list = [
     {
         "data_size" : 15000,
-        "rescale" : 100,
-	"param" : ["e1","e2"],
-	"model" : Net2D(out_dim=2)
-    },
-    {
-	"data_size" : 15000,
-	"rescale" : 1,
-	"param" : ["e1","e2"],
-	"model" : Net2D(out_dim=2),
-	"epochs" : 2500
-    },
-    {
-        "data_size" : 20000,
         "rescale" : 1,
-        "param" : ["e1","e2"],
-        "model" : Net2D(out_dim=2)
+        "param" : ["theta_e"],
+        "model" : Net3D_wDO(out_dim=1)
     }
 ]
 
