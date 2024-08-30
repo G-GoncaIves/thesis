@@ -4,7 +4,7 @@ import sys
 import torch
 
 sys.path.insert(1, '/home/goncalo/Projects/thesis/utils/ml')
-from models import Net2D
+from models import Net3D, Net2D, Net3D_v1, Net3D_v2, Net3D_v3
 from train import run_multiple_trains
 
 default_config = {
@@ -14,31 +14,24 @@ default_config = {
     "batch_size" : 100,
     "rescale" : 1,
     "loss_fn" : torch.nn.MSELoss(),
+    "patience" : 300,
+    "min_delta" : 0,
     "model" : None,
+    "no_td" : None,
     "param" : None,
-    "data_path" : "/home/goncalo/Projects/thesis/scripts/Data/test/m_2/Videos",
-    "generation_df_path" : "/home/goncalo/Projects/thesis/scripts/Data/test/m_2/test_simulated.pickle"
+    "data_path" : "/home/goncalo/Projects/thesis/scripts/Data/noisy_train/m_2/Videos",
+    "generation_df_path" : "/home/goncalo/Projects/thesis/scripts/Data/noisy_train/m_2/noisy_train_simulated.pickle"
 }
 
 configs_list = [
-    {
+   {
+        "param" : ["im_td"],
+        "model" : Net3D_v2(out_dim=1),
+        "epochs" : 1000,
         "data_size" : 15000,
-        "rescale" : 100,
-	"param" : ["e1","e2"],
-	"model" : Net2D(out_dim=2)
-    },
-    {
-	"data_size" : 15000,
-	"rescale" : 1,
-	"param" : ["e1","e2"],
-	"model" : Net2D(out_dim=2),
-	"epochs" : 2500
-    },
-    {
-        "data_size" : 20000,
-        "rescale" : 1,
-        "param" : ["e1","e2"],
-        "model" : Net2D(out_dim=2)
+        "no_td" : False,
+        "rescale" : 1/200,
+        "patience" : 50
     }
 ]
 
