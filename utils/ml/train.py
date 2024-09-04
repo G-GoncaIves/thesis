@@ -7,6 +7,7 @@ from tqdm import tqdm
 from datetime import date
 import pickle
 import json
+import copy
 
 #Custom imports:
 from data import Videos
@@ -250,7 +251,7 @@ def run_multiple_trains(
         for key in config.keys():
             current_train_config[key] = config[key]
         
-        _config = current_train_config
+        _config = copy.deepcopy(current_train_config)
         for key in ["loss_fn", "model"]:
             _config[key] = str(_config[key])
         with open(store_configs_path, "w+") as f:
