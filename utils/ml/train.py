@@ -256,10 +256,10 @@ def run_multiple_trains(
         data = Videos(
             videos_dir = current_train_config["data_path"],
             generation_df_path = current_train_config["generation_df_path"],
-            rescale = current_train_config["rescale"],
+            rescale_labels = current_train_config["rescale_labels"],
             labels = current_train_config["param"],
             no_td = current_train_config["no_td"],
-            normalize_input = current_train_config["normalize_input"]
+            normalize_data = current_train_config["normalize_data"]
         )
         
         g_cpu = torch.Generator()
