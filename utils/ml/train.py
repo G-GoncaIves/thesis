@@ -235,6 +235,7 @@ def run_multiple_trains(
     name = current_date.strftime("%d-%m-%y")
     output_dir = os.path.join(train_dir, name).replace("\\", "/")
     summary_path = os.path.join(output_dir, "summary.json").replace("\\", "/")
+    store_configs_path = os.path.join(output_dir, "configs.json").replace("\\", "/")
     setup_dir(output_dir)
     
     summary = {}
@@ -248,13 +249,17 @@ def run_multiple_trains(
         current_train_config = default_config
         for key in config.keys():
             current_train_config[key] = config[key]
+        
+        with open(store_configs_path, "w+") as f:
+            json.dump(current_train_config, f, indent=4)
     
         data = Videos(
             videos_dir = current_train_config["data_path"],
             generation_df_path = current_train_config["generation_df_path"],
             rescale = current_train_config["rescale"],
             labels = current_train_config["param"],
-            no_td = current_train_config["no_td"]
+            no_td = current_train_config["no_td"],
+            normalize_input = current_train_config["normalize_input"]
         )
         
         g_cpu = torch.Generator()
@@ -317,5 +322,5 @@ def run_multiple_trains(
         with open(summary_path, "w+") as f:
             json.dump(summary, f, indent=4)
         config_pbar.update(1)
-            
+        
         

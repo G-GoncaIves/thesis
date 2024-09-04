@@ -13,8 +13,9 @@ class Videos(Dataset):
         videos_dir,
         generation_df_path,
         labels,
-        rescale,
-        no_td = True
+        rescale_labels,
+        no_td = True,
+        normalize_data = False
     ):
         self.no_td = no_td
         total_df = pd.read_pickle(generation_df_path)
@@ -25,7 +26,8 @@ class Videos(Dataset):
         self.data_dir = videos_dir
         ids = os.listdir(videos_dir)
         self.ids = list(filter(self.is_desired_type, ids))
-        self.rescale = rescale
+        self.rescale_labels = rescale_labels
+        self.normalize_data = normalize_data
     
     def is_desired_type(self, sample_name):
         if "no_td" in sample_name:
@@ -55,12 +57,15 @@ class Videos(Dataset):
         target_tensor = torch.zeros(len(self.labels))
         for i in range(len(self.labels)):
             target_tensor[i] = float(row[self.labels[i]].to_numpy()[0])
-        return target_tensor
+        return target_tensor*self.rescale_labels
     
     def get_sample_tensor(self, id):
         video_path = os.path.join(self.data_dir, id).replace("\\","/")
         video_array = np.float32(np.load(video_path))
         frame_array = np.asarray([video_array])
+        frame_tensor = torch.from_numpy(frame_array)
+        if self.normalize_data:
+            frame_tensor /= torch.max(frame_tensor) 
         return torch.from_numpy(frame_array)
         
     def __len__(self):
@@ -74,4 +79,4 @@ class Videos(Dataset):
         else:
             id_str_extras = ".npy"
         target_tensor = self.get_target_tensor(id = sample_id.replace(id_str_extras,""))
-        return frame_tensor, target_tensor*self.rescale, index
+        return frame_tensor, target_tensor, index
