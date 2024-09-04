@@ -250,8 +250,10 @@ def run_multiple_trains(
         for key in config.keys():
             current_train_config[key] = config[key]
         
+        _config = current_train_config
+        _config["loss_fn"] = _config["loss_fn"].__name__
         with open(store_configs_path, "w+") as f:
-            json.dump(current_train_config, f, indent=4)
+            json.dump(_config, f, indent=4)
     
         data = Videos(
             videos_dir = current_train_config["data_path"],
