@@ -251,7 +251,8 @@ def run_multiple_trains(
             current_train_config[key] = config[key]
         
         _config = current_train_config
-        _config["loss_fn"] = str(_config["loss_fn"])
+        for key in ["loss_fn", "model"]:
+            _config[key] = str(_config[key])
         with open(store_configs_path, "w+") as f:
             json.dump(_config, f, indent=4)
     
