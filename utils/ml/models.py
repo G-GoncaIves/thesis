@@ -232,7 +232,7 @@ class Net3D_Positive(torch.nn.Module):
 class Net3D_Positive_v2(torch.nn.Module):
     
     def __init__(self, out_dim):
-        super(Net3D_Positive, self).__init__()
+        super(Net3D_Positive_v2, self).__init__()
         self.net = torch.nn.Sequential(
             torch.nn.Conv3d(
                 in_channels = 1,
