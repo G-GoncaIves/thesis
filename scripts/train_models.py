@@ -31,7 +31,7 @@ configs_list = [
         "epochs" : 1000,
         "data_size" : 15000,
         "no_td" : False,
-        "rescale" : 1/200,
+        "rescale_labels" : 1/200,
         "patience" : 100,
 	"normalize_data" : False
     }
