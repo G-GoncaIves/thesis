@@ -4,7 +4,7 @@ import sys
 import torch
 
 sys.path.insert(1, '/home/goncalo/Projects/thesis/utils/ml')
-from models import Net3D_Positive, Net3D
+from models import Net3D_Positive_v2
 from train import run_multiple_trains
 
 default_config = {
@@ -27,23 +27,13 @@ default_config = {
 configs_list = [
    {
         "param" : ["im_td"],
-        "model" : Net3D_Positive(out_dim=1),
+        "model" : Net3D_Positive_v2(out_dim=1),
         "epochs" : 1000,
         "data_size" : 15000,
         "no_td" : False,
         "rescale" : 1/200,
         "patience" : 100,
-	"normalize_data" : True
-    },
-    {
-        "param" : ["im_td"],
-        "model" : Net3D(out_dim=1),
-        "epochs" : 1000,
-        "data_size" : 15000,
-        "no_td" : False,
-        "rescale" : 1/200,
-        "patience" : 100,
-        "normalize_data" : True
+	"normalize_data" : False
     }
 ]
 
