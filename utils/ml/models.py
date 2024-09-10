@@ -297,7 +297,7 @@ class Net3D_Positive_v2(torch.nn.Module):
                 in_features = 6,
                 out_features = out_dim
             ),
-            torch.nn.ReLU()      
+            torch.nn.Softplus()      
         )
         self.net.apply(self.weights_init)
 
