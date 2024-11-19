@@ -3,8 +3,7 @@ import os
 import sys
 import torch
 
-working_dir = ""
-sys.path.insert(1, working_dir)
+sys.path.insert(1, '/home/goncalo/Projects/thesis/utils/ml')
 from models import Net3D_Positive_v2
 from train import run_multiple_trains
 
