@@ -66,7 +66,8 @@ def train_epoch(batch, label, model, device, loss_function, optimizer):
     model_output = model(batch)
     if isinstance(loss_function, nn.GaussianNLLLoss):
         num_outputs = model_output.size(1) // 2
-        prediction, variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        prediction, log_variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        variance = torch.exp(log_variance)
         batch_loss = loss_function(prediction, label.float(), variance)
     else:
         batch_loss = loss_function(prediction, label.float())
@@ -80,7 +81,8 @@ def evaluate_model(batch, label, model, device, loss_function):
     model_output = model(batch)
     if isinstance(loss_function, nn.GaussianNLLLoss):
         num_outputs = model_output.size(1) // 2
-        prediction, variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        prediction, log_variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        variance = torch.exp(log_variance)
         batch_loss = loss_function(prediction, label, variance)
     else:
         batch_loss = loss_function(prediction, label)
@@ -219,7 +221,8 @@ def test_model(batch, label, model, device, loss_function):
     model_output = model(batch)
     if isinstance(loss_function, nn.GaussianNLLLoss):
         num_outputs = model_output.size(1) // 2
-        prediction, variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        prediction, log_variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        variance = torch.exp(log_variance)
         batch_loss = loss_function(prediction, label, variance)
     else:
         batch_loss = loss_function(prediction, label)
