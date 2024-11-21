@@ -2,6 +2,7 @@
 import os
 import sys
 import torch
+import numpy as np
 
 sys.path.insert(1, '/home/goncalo/Projects/thesis/utils/ml')
 from models import Net3D_Dropout
@@ -37,7 +38,7 @@ grid_search_dict =    {
 
 configs_list = []
 
-for dpr in range(0,1,0.1):
+for dpr in np.linspace(0,1,num=5):
     config_dict = grid_search_dict["model"] = Net3D_Dropout(out_dim=2, dropout_rate=dpr)
     configs_list.append()
 
