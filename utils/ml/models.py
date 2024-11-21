@@ -161,7 +161,7 @@ class Net3D(torch.nn.Module):
 class Net3D_Dropout(torch.nn.Module):
     
     def __init__(self, out_dim, dropout_rate):
-        super(Net3D, self).__init__()
+        super(Net3D_Dropout, self).__init__()
         self.net = torch.nn.Sequential(
             torch.nn.Conv3d(
                 in_channels = 1,
