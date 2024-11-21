@@ -8,6 +8,7 @@ from datetime import date
 import pickle
 import json
 import copy
+import torch.nn as nn
 
 #Custom imports:
 from data import Videos
@@ -62,8 +63,13 @@ def train_epoch(batch, label, model, device, loss_function, optimizer):
     optimizer.zero_grad()
     batch = batch.to(device)
     label = label.to(device)
-    prediction = model(batch)
-    batch_loss = loss_function(prediction, label.float())
+    model_output = model(batch)
+    if isinstance(loss_function, nn.GaussianNLLLoss):
+        num_outputs = model_output.size(1) // 2
+        prediction, variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        batch_loss = loss_function(prediction, label.float(), variance)
+    else:
+        batch_loss = loss_function(prediction, label.float())
     batch_loss.backward()
     optimizer.step()
     return batch_loss
@@ -71,9 +77,19 @@ def train_epoch(batch, label, model, device, loss_function, optimizer):
 def evaluate_model(batch, label, model, device, loss_function):
     batch = batch.to(device)
     label = label.to(device)
-    prediction = model(batch)
-    batch_loss = loss_function(prediction, label)
+    model_output = model(batch)
+    if isinstance(loss_function, nn.GaussianNLLLoss):
+        num_outputs = model_output.size(1) // 2
+        prediction, variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        batch_loss = loss_function(prediction, label, variance)
+    else:
+        batch_loss = loss_function(prediction, label)
     return batch_loss
+
+def activate_dropout(model):
+    for module in model.modules():
+        if isinstance(module, nn.Dropout):
+            module.train()
 
 def train(
     model,
@@ -87,7 +103,8 @@ def train(
     min_delta,
     save_every=5,
     train_desc="",
-    device=None
+    device=None,
+    mc_dropout=False
     ):
     epoch_pbar = tqdm(
         total = n_epochs,
@@ -135,6 +152,8 @@ def train(
         batch_train_pbar.reset()
         avg_train_loss = train_loss / i
         model.eval()
+        if mc_dropout:
+            activate_dropout(model)
         valid_loss = 0
         with torch.no_grad():
             for j, (batch, label, _) in enumerate(valid_loader):
@@ -197,8 +216,13 @@ class NpEncoder(json.JSONEncoder):
 def test_model(batch, label, model, device, loss_function):
     batch = batch.to(device)
     label = label.to(device)
-    prediction = model(batch)
-    batch_loss = loss_function(prediction, label)
+    model_output = model(batch)
+    if isinstance(loss_function, nn.GaussianNLLLoss):
+        num_outputs = model_output.size(1) // 2
+        prediction, variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
+        batch_loss = loss_function(prediction, label, variance)
+    else:
+        batch_loss = loss_function(prediction, label)
     return batch_loss
 
 def test(dataloader, loss_fn, device, model, pbar):  
@@ -229,7 +253,8 @@ def run_multiple_trains(
     train_dir : str,
     default_config : dict,
     return_test_idxs = False,
-    device=None
+    device=None,
+    mc_dropout = False
     ):
     
     current_date = date.today()
@@ -268,9 +293,11 @@ def run_multiple_trains(
         
         g_cpu = torch.Generator()
         g_cpu.manual_seed(2147483647)
-        total_train_set, valid_set, test_set = torch.utils.data.random_split(data, [0.7,0.2,0.1], generator=g_cpu)
+        total_train_set, total_valid_set, total_test_set = torch.utils.data.random_split(data, [0.7,0.2,0.1], generator=g_cpu)
         ratio = current_train_config["data_size"] / len(total_train_set)
         _, train_set = torch.utils.data.random_split(total_train_set, [1-ratio,ratio], generator=g_cpu)
+        _, valid_set = torch.utils.data.random_split(total_valid_set, [1-ratio,ratio], generator=g_cpu) # [!] Affects thesis results.
+        _, test_set = torch.utils.data.random_split(total_test_set, [1-ratio,ratio], generator=g_cpu)   # [!] Affects thesis results.
         
         train_dataloader = DataLoader(train_set, batch_size=current_train_config["batch_size"], shuffle=True)
         valid_dataloader = DataLoader(valid_set, batch_size=current_train_config["batch_size"], shuffle=True)
@@ -293,7 +320,8 @@ def run_multiple_trains(
             train_desc = current_trains_desc,
             patience = current_train_config["patience"],
             min_delta = current_train_config["min_delta"],
-            device=device
+            device=device,
+            mc_dropout=mc_dropout
         )
         
         with torch.no_grad():
