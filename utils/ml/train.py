@@ -253,8 +253,7 @@ def run_multiple_trains(
     train_dir : str,
     default_config : dict,
     return_test_idxs = False,
-    device=None,
-    mc_dropout = False
+    device=None
     ):
     
     current_date = date.today()
@@ -321,7 +320,7 @@ def run_multiple_trains(
             patience = current_train_config["patience"],
             min_delta = current_train_config["min_delta"],
             device=device,
-            mc_dropout=mc_dropout
+            mc_dropout = current_train_config["mc_dropout"]
         )
         
         with torch.no_grad():
