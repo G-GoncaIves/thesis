@@ -59,7 +59,11 @@ def save_evolution(model, optimizer, history, out_dir, epoch):
             protocol=pickle.HIGHEST_PROTOCOL
         )
 
-def train_epoch(batch, label, model, device, loss_function, optimizer):
+def log_behaviour(json_path, metrics_dict):
+    with open(json_path, "a+") as f:
+        json.dump(metrics_dict, f, indent=4)
+
+def train_epoch(batch, label, model, device, loss_function, optimizer, log_path):
     optimizer.zero_grad()
     batch = batch.to(device)
     label = label.to(device)
@@ -69,6 +73,33 @@ def train_epoch(batch, label, model, device, loss_function, optimizer):
         prediction, log_variance = model_output[:, :num_outputs], model_output[:, num_outputs:]
         variance = torch.exp(log_variance)
         batch_loss = loss_function(prediction, label.float(), variance)
+        if log_path:
+            log_behaviour(
+                json_path = log_path,
+                metrics_dict = {
+                    "prediction" : {
+                        "median" : torch.median(prediction), 
+                        "prediction" : torch.mean(prediction), 
+                        "std" : torch.std(prediction), 
+                        "max" : torch.max(prediction), 
+                        "min" : torch.min(prediction)
+                    },
+                    "log_variance" : {
+                        "median" : torch.median(log_variance), 
+                        "prediction" : torch.mean(log_variance), 
+                        "std" : torch.std(log_variance), 
+                        "max" : torch.max(log_variance), 
+                        "min" : torch.min(log_variance)
+                    },
+                    "variance" : {
+                        "median" : torch.median(variance), 
+                        "prediction" : torch.mean(variance), 
+                        "std" : torch.std(variance), 
+                        "max" : torch.max(variance), 
+                        "min" : torch.min(variance)
+                    }
+                }
+            )
     else:
         batch_loss = loss_function(prediction, label.float())
     batch_loss.backward()
@@ -106,7 +137,8 @@ def train(
     save_every=5,
     train_desc="",
     device=None,
-    mc_dropout=False
+    mc_dropout=False,
+    log=False
     ):
     epoch_pbar = tqdm(
         total = n_epochs,
@@ -137,6 +169,10 @@ def train(
         patience=patience, 
         min_delta=min_delta
         )
+    if log:
+        log_path = os.path.join(out_dir, "train_log.json").replace("\\","/")
+    else:
+        log_path = None
     for epoch in range(n_epochs):
         model.train()
         train_loss = 0
@@ -147,7 +183,8 @@ def train(
                 model = model,
                 device = device,
                 loss_function = loss_fn,
-                optimizer = optimizer
+                optimizer = optimizer,
+                log_path = log_path
             )
             train_loss += batch_loss
             batch_train_pbar.update(1)
