@@ -360,7 +360,8 @@ def run_multiple_trains(
             patience = current_train_config["patience"],
             min_delta = current_train_config["min_delta"],
             device=device,
-            mc_dropout = current_train_config["mc_dropout"]
+            mc_dropout = current_train_config["mc_dropout"],
+            log = current_train_config["log_train"]
         )
         
         with torch.no_grad():
