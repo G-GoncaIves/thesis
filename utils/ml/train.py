@@ -63,7 +63,7 @@ def log_behaviour(json_path, metrics_dict):
     with open(json_path, "a+") as f:
         json.dump(metrics_dict, f, indent=4)
 
-def train_epoch(batch, label, model, device, loss_function, optimizer, log_path):
+def train_epoch(batch, label, model, device, loss_function, optimizer, log_path, epoch):
     optimizer.zero_grad()
     batch = batch.to(device)
     label = label.to(device)
@@ -77,26 +77,28 @@ def train_epoch(batch, label, model, device, loss_function, optimizer, log_path)
             log_behaviour(
                 json_path = log_path,
                 metrics_dict = {
-                    "prediction" : {
-                        "median" : torch.median(prediction).detach().to("cpu").tolist(), 
-                        "prediction" : torch.mean(prediction).detach().to("cpu").tolist(), 
-                        "std" : torch.std(prediction).detach().to("cpu").tolist(), 
-                        "max" : torch.max(prediction).detach().to("cpu").tolist(), 
-                        "min" : torch.min(prediction).detach().to("cpu").tolist()
-                    },
-                    "log_variance" : {
-                        "median" : torch.median(log_variance).detach().to("cpu").tolist(), 
-                        "prediction" : torch.mean(log_variance).detach().to("cpu").tolist(), 
-                        "std" : torch.std(log_variance).detach().to("cpu").tolist(), 
-                        "max" : torch.max(log_variance).detach().to("cpu").tolist(), 
-                        "min" : torch.min(log_variance).detach().to("cpu").tolist()
-                    },
-                    "variance" : {
-                        "median" : torch.median(variance).detach().to("cpu").tolist(), 
-                        "prediction" : torch.mean(variance).detach().to("cpu").tolist(), 
-                        "std" : torch.std(variance).detach().to("cpu").tolist(), 
-                        "max" : torch.max(variance).detach().to("cpu").tolist(), 
-                        "min" : torch.min(variance).detach().to("cpu").tolist()
+                    f"Epoch {epoch}" : {
+                        "prediction" : {
+                            "median" : torch.median(prediction).detach().to("cpu").tolist(), 
+                            "prediction" : torch.mean(prediction).detach().to("cpu").tolist(), 
+                            "std" : torch.std(prediction).detach().to("cpu").tolist(), 
+                            "max" : torch.max(prediction).detach().to("cpu").tolist(), 
+                            "min" : torch.min(prediction).detach().to("cpu").tolist()
+                        },
+                        "log_variance" : {
+                            "median" : torch.median(log_variance).detach().to("cpu").tolist(), 
+                            "prediction" : torch.mean(log_variance).detach().to("cpu").tolist(), 
+                            "std" : torch.std(log_variance).detach().to("cpu").tolist(), 
+                            "max" : torch.max(log_variance).detach().to("cpu").tolist(), 
+                            "min" : torch.min(log_variance).detach().to("cpu").tolist()
+                        },
+                        "variance" : {
+                            "median" : torch.median(variance).detach().to("cpu").tolist(), 
+                            "prediction" : torch.mean(variance).detach().to("cpu").tolist(), 
+                            "std" : torch.std(variance).detach().to("cpu").tolist(), 
+                            "max" : torch.max(variance).detach().to("cpu").tolist(), 
+                            "min" : torch.min(variance).detach().to("cpu").tolist()
+                        }
                     }
                 }
             )
