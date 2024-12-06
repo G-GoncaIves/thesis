@@ -17,7 +17,7 @@ from data import Videos
 
 def setup_dir(
     output_dir,
-    train_desc=""
+    train_desc=None
     ):
     try:
         os.mkdir(output_dir)
@@ -25,7 +25,10 @@ def setup_dir(
         pass
     current_date = date.today()
     name = current_date.strftime("%d-%m-%y")
-    training_output_dir = os.path.join(output_dir, name+train_desc).replace("\\","/")
+    if train_desc:
+        training_output_dir = os.path.join(output_dir, train_desc).replace("\\","/")
+    else:
+        training_output_dir = os.path.join(output_dir, name).replace("\\","/")
     os.mkdir(training_output_dir)
     return training_output_dir
 
@@ -137,7 +140,7 @@ def train(
     patience,
     min_delta,
     save_every=5,
-    train_desc="",
+    train_desc=None,
     device=None,
     mc_dropout=False,
     log=False
@@ -171,14 +174,13 @@ def train(
         patience=patience, 
         min_delta=min_delta
         )
-    if log:
-        log_path = os.path.join(out_dir, "train_log.json").replace("\\","/")
-    else:
-        log_path = None
     for epoch in range(n_epochs):
         model.train()
         train_loss = 0
+        _log_path = None
         for i, (batch, label, _) in enumerate(train_loader):
+            if i == len(train_loader) and log:
+                _log_path = os.path.join(out_dir, "train_log.json").replace("\\","/")
             batch_loss = train_epoch(
                 batch = batch,
                 label = label,
@@ -186,7 +188,7 @@ def train(
                 device = device,
                 loss_function = loss_fn,
                 optimizer = optimizer,
-                log_path = log_path
+                log_path = _log_path
             )
             train_loss += batch_loss
             batch_train_pbar.update(1)
@@ -303,7 +305,6 @@ def run_multiple_trains(
     output_dir = os.path.join(train_dir, name).replace("\\", "/")
     summary_path = os.path.join(output_dir, "summary.json").replace("\\", "/")
     store_configs_path = os.path.join(output_dir, "configs.json").replace("\\", "/")
-    setup_dir(output_dir)
     
     summary = {}
     config_pbar = tqdm(
@@ -312,7 +313,7 @@ def run_multiple_trains(
         desc = "Config      "
     )
     for n_config, config in enumerate(configs_list):
-        current_trains_desc = f"_config_{n_config}"
+        current_trains_desc = f"config_{n_config}"
         current_train_config = default_config
         for key in config.keys():
             current_train_config[key] = config[key]
