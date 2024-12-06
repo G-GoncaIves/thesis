@@ -186,7 +186,8 @@ def train(
                 device = device,
                 loss_function = loss_fn,
                 optimizer = optimizer,
-                log_path = _log_path
+                log_path = _log_path,
+                epoch = epoch
             )
             train_loss += batch_loss
             batch_train_pbar.update(1)
