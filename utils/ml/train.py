@@ -23,15 +23,13 @@ def setup_dir(
         os.mkdir(output_dir)
     except FileExistsError:
         pass
-    current_date = date.today()
-    name = current_date.strftime("%d-%m-%y")
     if train_desc:
         training_output_dir = os.path.join(output_dir, train_desc).replace("\\","/")
+        os.mkdir(training_output_dir)
+        return training_output_dir
     else:
-        training_output_dir = os.path.join(output_dir, name).replace("\\","/")
-    os.mkdir(training_output_dir)
-    return training_output_dir
-
+        return output_dir
+    
 class EarlyStopper():
     def __init__(self, patience=1, min_delta=0):
         self.patience = patience
@@ -305,6 +303,7 @@ def run_multiple_trains(
     output_dir = os.path.join(train_dir, name).replace("\\", "/")
     summary_path = os.path.join(output_dir, "summary.json").replace("\\", "/")
     store_configs_path = os.path.join(output_dir, "configs.json").replace("\\", "/")
+    setup_dir(output_dir)
     
     summary = {}
     config_pbar = tqdm(
